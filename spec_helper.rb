@@ -1,6 +1,12 @@
+# -*- encoding : utf-8 -*-
+
 require 'rubygems'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet'
+
+# Use UTF-8 encoding to parse Ruby .rb files, and don't escape non-ASCII
+# characters in unicode strings when printing and calling `#inspect`.
+$KCODE = "UTF-8"
 
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 
