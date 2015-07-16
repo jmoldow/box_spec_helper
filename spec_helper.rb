@@ -87,6 +87,10 @@ RSpec.configure do |c|
   Pathname.glob("#{c.spec_dir}/shared_contexts/*.rb") do |file|
     require file.relative_path_from(c.spec_dir_pathname)
   end
+
+  Pathname.glob("#{c.spec_dir}/shared_examples/*.rb") do |file|
+    require file.relative_path_from(c.spec_dir_pathname)
+  end
 end
 
 # NOTE(jmoldow): Despite what you may read online, setting a param to
