@@ -54,6 +54,29 @@ RSpec::Matchers.define :fail_with_regexp do |message|
   end
 end
 
+#Based on `be_skipped_with` from <https://github.com/rspec/rspec-core/blob/v3.1.7/spec/support/matchers.rb>
+RSpec::Matchers.define :be_skipped_with_regexp do |message|
+  message = Regexp.escape(message) if message.is_a?(String)
+
+  match do |example|
+    failure_reason(example, message).nil?
+  end
+
+  failure_message do |example|
+    "expected: example skipped with #{message.inspect}\n     got: #{failure_reason(example, message)}"
+  end
+
+  def failure_reason(example, message)
+    result = example.metadata[:execution_result]
+    if !example.pending?
+      if result.status == :passed then 'passed' else result.exception.message end
+    elsif !example.skipped? then result.status
+    elsif result.pending_message.match(message).nil? then result.pending_message
+    else nil
+    end
+  end
+end
+
 # Remainder of file copied from <https://github.com/rspec/rspec-core/blob/v3.1.7/spec/support/matchers.rb>
 
 RSpec::Matchers.define :map_specs do |specs|
