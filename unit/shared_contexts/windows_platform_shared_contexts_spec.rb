@@ -11,6 +11,41 @@ describe 'windows platform shared contexts' do
   facts_x86 = {:architecture => 'x86', :hardwaremodel => 'x86'}
   facts_windows_x86 = facts_windows.merge(facts_x86)
 
+  it 'should pass when testing Windows providers' do
+    group = RSpec::Core::ExampleGroup.describe '::windows_platform_test', :type => :class, :as_platform => :windows do
+      it do
+        should compile
+
+        should contain_file('C:/Users/bob/foobar.txt').with({
+          :content  => 'Hello World!',
+          :owner    => 'bob',
+          :group    => 'Administrators',
+        })
+
+        should contain_registry__value('Setting0').with({
+          :key    => 'HKLM\System\CurrentControlSet\Services\Puppet',
+          :value  => '(default)',
+          :data   => "Hello World!",
+          :type   => 'string',
+        })
+
+        should contain_windows_env('title').with({
+          :ensure             => 'present',
+          :mergemode          => 'prepend',
+          :variable           => 'VAR',
+          :value              => ['VAL', 'VAL2'],
+          :user               => 'bob',
+          :separator          => ':',
+          :broadcast_timeout  => 2000,
+          :type               => 'REG_SZ',
+        })
+      end
+    end
+    example = group.examples.first
+    example.run(group.new, double.as_null_object)
+    expect(example).to pass
+  end
+
   context 'with {:as_platform => :windows, :as_arch => :windows_x64}', :as_platform => :windows, :as_arch => :windows_x64 do
     it { expect(facts).to eq(facts_windows_x64) }
   end

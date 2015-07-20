@@ -43,6 +43,11 @@ RSpec.configure do |c|
     :puppetversion  =>  Puppet::PUPPETVERSION,
     :rubyversion    =>  RUBY_VERSION,
   })
+
+  # The rspec-mocks framework is needed in order to call the `double` method to create
+  # test double objects inside examples.
+  c.mock_framework = :rspec
+
   c.before :each do
     Puppet::Settings::AutosignSetting.any_instance.stubs(:munge).returns(false)
   end
