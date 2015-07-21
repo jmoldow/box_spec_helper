@@ -51,8 +51,6 @@ end
 # Taken from <https://github.com/puppetlabs/puppet/blob/3.7.5/spec/shared_contexts/platform.rb>.
 
 shared_context 'platform' do |platform|
-  is_windows = (platform == :windows)
-
   vardir = VARDIR[platform]
   let_facts_merge(:vardir => vardir, :puppet_vardir => vardir, :concat_basedir => "#{vardir}/concat")
 
@@ -63,6 +61,13 @@ shared_context 'platform' do |platform|
     next if platform == @stubbed_platform
     raise "Attempted to stub platform #{platform} after already stubbing platform #{@stubbed_platform}" unless @stubbed_platform.nil?
     @stubbed_platform = platform
+
+    @is_windows = (platform == :windows)
+    @parent_is_windows = Puppet.features.microsoft_windows?
+
+    # Don't bother stubbing the platform if the actual machine (or the stubbed platform
+    # from a parent example) is of the same type.
+    next if @is_windows == @parent_is_windows
 
     with_verbose_disabled do
       # Compile the catalog a few times, ignoring all exceptions (which can be caused by
@@ -87,23 +92,26 @@ shared_context 'platform' do |platform|
       end
     end
 
-    @parent_is_windows = Puppet.features.microsoft_windows?
-
     # Puppet builds into its objects the ability to do stubbing with the mocha framework.
     # `stubs` is a method defined in the mocha framework.
     # Stubbed methods must be torn down at the end of each test. But because we do not
     # register mocha with rspec (instead, we register rspec-mocks, because we need the
     # `double` method that it defines), this is not done automatically. So we must call
     # `Mocha::Mockery.teardown` in an ``after(:each)`` block, below.
-    Puppet.features.stubs(:microsoft_windows?).returns(if is_windows then true else nil end)
-    Puppet.features.stubs(:posix?).returns(! is_windows)
+    Puppet.features.stubs(:microsoft_windows?).returns(if @is_windows then true else nil end)
+    Puppet.features.stubs(:posix?).returns(! @is_windows)
 
     # prevent Ruby from warning about changing a constant
     with_verbose_disabled do
       @parent_alt_separator = File::ALT_SEPARATOR
       @parent_path_separator = File::PATH_SEPARATOR
-      File::ALT_SEPARATOR = if is_windows then '\\' else nil end
-      File::PATH_SEPARATOR = if is_windows then ';' else ':' end
+      File::ALT_SEPARATOR = if @is_windows then '\\' else nil end
+      File::PATH_SEPARATOR = if @is_windows then ';' else ':' end
+    end
+
+    # Convert the module path into the correct format for this platform.
+    RSpec.configure do |c|
+      c.fix_module_path_separator
     end
   end
 
@@ -116,6 +124,9 @@ shared_context 'platform' do |platform|
     # example, running on a Linux machine. When the inner example completes, the outer
     # example should NOT be running with unstubbed Linux values. It should instead
     # continue running with its original Windows stubs.
+
+    next if @is_windows == @parent_is_windows
+
     with_verbose_disabled do
       File::ALT_SEPARATOR = @parent_alt_separator
       File::PATH_SEPARATOR = @parent_path_separator
@@ -125,6 +136,10 @@ shared_context 'platform' do |platform|
     else
       Puppet.features.stubs(:microsoft_windows?).returns(@parent_is_windows)
       Puppet.features.stubs(:posix?).returns(! @parent_is_windows)
+    end
+
+    RSpec.configure do |c|
+      c.fix_module_path_separator
     end
   end
 end
