@@ -82,7 +82,7 @@ shared_context 'platform' do |platform|
           unless (self.class.ancestors & EXAMPLE_GROUPS_WITH_SUBJECT_THAT_LOADS_CATALOG).empty?
             subject.call
           end
-        rescue
+        rescue Exception => exc
           # For now, ignore any exceptions, since we're purposely trying to trigger and
           # ignore any one-time exceptions that occur during Puppet type loading. If
           # they aren't one-time exceptions, they will get raised again during the test.

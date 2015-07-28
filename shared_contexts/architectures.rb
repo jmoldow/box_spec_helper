@@ -42,7 +42,7 @@ end
 ARCHITECTURES.each do |architecture, platform_hash|
   platform_hash.each do |platform, architecture_string|
     symbol = :"#{platform}_#{architecture}"
-    shared_context symbol, :as_arch => symbol do
+    shared_context symbol.to_s, :as_arch => symbol do
       include_context platform.to_s
       include_context 'architecture', architecture_string
     end
