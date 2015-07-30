@@ -25,6 +25,7 @@ require 'rubygems'
 
 require 'mocha/mockery'
 require 'puppet'
+require 'puppet/settings/file_setting'
 require 'rspec-puppet'
 
 require 'support/example'
@@ -38,21 +39,84 @@ PLATFORM_TYPE, OTHER_PLATFORM_TYPE = if IS_WINDOWS then [:windows, :posix] else 
 FILE_ALT_SEPARATOR = File::ALT_SEPARATOR
 FILE_PATH_SEPARATOR = File::PATH_SEPARATOR
 
-VARDIR = {
-  :posix    =>  '/var/lib/puppet',
-  :windows  =>  'C:/ProgramData/PuppetLabs/puppet/var/state',
-}
+class Puppet::Settings::FileSetting
+  def munge(value)
+    # Normally, this method transforms `value` with `File.expand_path(value)`. But that
+    # function doesn't seem to be affected by the platform stubbing. On a real Linux
+    # platform, something like `File.expand_path("C:\\Windows")` will always return
+    # something like "/home/username/puppet/C:\\Windows", even when stubbing for the
+    # Windows platform. This means that something like
+    # ``Puppet[:clientbucketdir] = "#{vardir}/clientbucket"`` will not work correctly
+    # when vardir is a Windows path. To make this work, don't do any munging of the
+    # path. This means that file settings must be absolute paths, but this should have
+    # always been the case anyway.
+    value
+  end
+end
+
+# Functions for helping to stub out values related to the platform.
+module PuppetPlatformFacts
+  # The fake vardir to use for various settings and system facts.
+  #
+  # This value is not used for the Puppet[:vardir] setting. rspec-puppet sets that to a
+  # real system path before each test.
+  def self.vardir_for_platform(platform)
+    {
+      :posix    =>  '/var/lib/puppet',
+      :windows  =>  'C:/ProgramData/PuppetLabs/puppet/var/state',
+    }[platform]
+  end
+
+  # The fake $PATH to use.
+  def self.path(platform)
+    {
+      :posix    => '/usr/bin:/usr/sbin/:/bin:/sbin:/usr/local/sbin:/usr/local/bin',
+      :windows  => "C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem",
+    }[platform]
+  end
+
+  # A hash of platform-derived facts that should be stubbed.
+  def self.facts(platform)
+    vardir = vardir_for_platform(platform)
+    {
+      :puppet_vardir    => vardir,
+      :concat_basedir   => "#{vardir}/concat",
+      :path             => path(platform),
+    }
+  end
+
+  # Configure various platform-derived Puppet settings.
+  def self.configure_puppet(platform)
+    vardir = vardir_for_platform(platform)
+
+    # This is needed for the filebucket resource declaration in site.pp. The setting
+    # needs to be an absolute path for the platform type that is being tested.
+    # Without this, the setting value will be derived from `Puppet[:vardir]` (not to be
+    # confused with the :puppet_vardir fact), which rspec-puppet always sets to be a
+    # real path on the real platform, regardless of the stubbed platform.
+    Puppet[:clientbucketdir] = "#{vardir}/clientbucket"
+
+    nil
+  end
+end
 
 RSpec.configure do |c|
-  vardir = VARDIR[PLATFORM_TYPE]
-  c.default_facts = c.default_facts.merge(:vardir => vardir, :puppet_vardir => vardir, :concat_basedir => "#{vardir}/concat")
+  c.default_facts = c.default_facts.merge(PuppetPlatformFacts.facts(PLATFORM_TYPE))
+
+  # Puppet configurations get reset between tests. So `configure_puppet` for each test.
+  # This `before :each` block makes sure that it gets run at least once for each test,
+  # even if there is no platform stubbing. And if there is platform stubbing, it will
+  # get run a second time later on, and override the settings with the correct values
+  # for the stubbed platform.
+  c.before :each do
+    PuppetPlatformFacts.configure_puppet(PLATFORM_TYPE)
+  end
 end
 
 # Taken from <https://github.com/puppetlabs/puppet/blob/3.7.5/spec/shared_contexts/platform.rb>.
 
 shared_context 'platform' do |platform|
-  vardir = VARDIR[platform]
-  let_facts_merge(:vardir => vardir, :puppet_vardir => vardir, :concat_basedir => "#{vardir}/concat")
+  let_facts_merge(PuppetPlatformFacts.facts(platform))
 
   before :each do
     # For a given example, don't allow the stubbing of conflicting platforms, and don't
@@ -64,6 +128,7 @@ shared_context 'platform' do |platform|
 
     @is_windows = (platform == :windows)
     @parent_is_windows = Puppet.features.microsoft_windows?
+    @parent_platform = if @parent_is_windows then :windows else :posix end
 
     # Don't bother stubbing the platform if the actual machine (or the stubbed platform
     # from a parent example) is of the same type.
@@ -113,6 +178,8 @@ shared_context 'platform' do |platform|
     RSpec.configure do |c|
       c.fix_module_path_separator
     end
+
+    PuppetPlatformFacts.configure_puppet(platform)
   end
 
   after :each do
@@ -141,6 +208,8 @@ shared_context 'platform' do |platform|
     RSpec.configure do |c|
       c.fix_module_path_separator
     end
+
+    PuppetPlatformFacts.configure_puppet(@parent_platform)
   end
 end
 

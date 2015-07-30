@@ -6,7 +6,8 @@ describe 'windows platform shared contexts' do
   vardir = 'C:/ProgramData/PuppetLabs/puppet/var/state'
   concat_dir = "#{vardir}/concat"
   facts_windows = {:operatingsystem => 'windows', :osfamily => 'windows', :kernel => 'windows', :root_home => 'C:\Users\Administrator'}
-  facts_windows.merge!(:vardir => vardir, :puppet_vardir => vardir, :concat_basedir => concat_dir)
+  facts_windows.merge!(:puppet_vardir => vardir, :concat_basedir => concat_dir)
+  facts_windows[:path] = "C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem"
   facts_windows_x64 = {:architecture => 'x64', :hardwaremodel => 'x64'}.merge(facts_windows)
   facts_x86 = {:architecture => 'x86', :hardwaremodel => 'x86'}
   facts_windows_x86 = facts_windows.merge(facts_x86)

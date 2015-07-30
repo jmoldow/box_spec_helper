@@ -5,7 +5,8 @@ require 'spec_helper'
 describe 'linux platforms shared contexts' do
   vardir = '/var/lib/puppet'
   concat_dir = "#{vardir}/concat"
-  facts_posix = {:vardir => vardir, :puppet_vardir => vardir, :concat_basedir => concat_dir}
+  facts_posix = {:puppet_vardir => vardir, :concat_basedir => concat_dir}
+  facts_posix[:path] = '/usr/bin:/usr/sbin/:/bin:/sbin:/usr/local/sbin:/usr/local/bin'
   facts_linux = {:kernel => 'Linux', :osfamily => 'Linux', :root_home => '/root'}.merge(facts_posix)
   facts_x64 = {:architecture => 'x86_64', :hardwaremodel => 'x86_64'}
   facts_posix_x64 = facts_posix.merge(facts_x64)
