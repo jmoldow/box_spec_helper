@@ -8,11 +8,11 @@ require 'rspec-puppet/support'
 
 require 'support/warn'
 
-# Up through version 2.2.0, rspec-puppet's RSpec::Puppet::Support#import_str() method
-# could not correctly import site.pp in the case where the module path contained
-# multiple directories [1]. As of the time of this writing, the bug has been fixed in the
-# master branch, but there has not yet been a release containing this fix. In this file,
-# we override that method with the implementation from the master branch.
+# Up through version 2.2.0, RSpec::Puppet::Support's import_str() and setup_puppet()
+# methods could not correctly handle multiple module path directories [1]. As of the
+# time of this writing, these bugs have been fixed in the master branch, but there has
+# not yet been a release containing these fixes. In this file, we override those methods
+# with the fixes from the master branch.
 #
 # [1] https://github.com/rodjek/rspec-puppet/pull/223
 
@@ -29,6 +29,18 @@ unless (rspec_puppet_version = Gem.loaded_specs['rspec-puppet'].version) <= Gem:
 else
   module RSpec::Puppet
     module Support
+      alias :setup_puppet_before_appending_to_load_path :setup_puppet
+
+      def setup_puppet
+        vardir = setup_puppet_before_appending_to_load_path
+        Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
+          Dir["#{d}/*/lib"].entries
+        end.flatten.each do |lib|
+          $LOAD_PATH << lib
+        end
+        vardir
+      end
+
       def import_str
         import_str = ""
         Puppet[:modulepath].split(File::PATH_SEPARATOR).each { |d|
