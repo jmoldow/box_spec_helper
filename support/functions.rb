@@ -16,6 +16,13 @@
 # The stub function should perform input validation and return a value of the correct
 # type, so that this test coverage is not lost.
 #
+# The names of modules in the spec/fixtures/override_modules/ directory must be unique
+# from the names of modules in the modules/ directory. Otherwise, the puppet parser will
+# only look in override_modules/<name>/ for *.pp files, and the classes and defines in
+# modules/<name>/ will not be discoverable during tests. If the function being stubbed
+# is in modules/foobar/lib/puppet/parser/functions/, the stub should be placed in
+# spec/fixtures/override_modules/foobar_overrides/lib/puppet/parser/functions/.
+#
 # Manifests should not be placed in the spec/fixtures/override_modules/ directory.
 #
 # This functionality is not used during puppet custom function tests. That way, it is
