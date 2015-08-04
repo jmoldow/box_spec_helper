@@ -36,6 +36,12 @@ module RSpec
           let_hash_merge(:facts, hash)
         end
 
+        # Helper method specifically for Puppet class/define params. Treat `:params` as
+        # a Hash (with default value {}), and merge `hash` into the definition.
+        def let_params_merge(hash)
+          let_hash_merge(:params, hash)
+        end
+
         private
 
         # @private
