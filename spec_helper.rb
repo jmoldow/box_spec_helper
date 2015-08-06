@@ -102,6 +102,10 @@ class PuppetUndef
   def inspect
     'undef'
   end
+
+  def nil?
+    true
+  end
 end
 
 # NOTE(jmoldow): Use this instead of `undef` or `nil`.
