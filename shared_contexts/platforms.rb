@@ -135,6 +135,7 @@ shared_context 'platform' do |platform|
     next if @is_windows == @parent_is_windows
 
     with_verbose_disabled do
+      last_exc = nil
       # Compile the catalog a few times, ignoring all exceptions (which can be caused by
       # platform differences), to make sure that all custom types have been defined
       # before the platform is stubbed out.
@@ -151,6 +152,11 @@ shared_context 'platform' do |platform|
           # For now, ignore any exceptions, since we're purposely trying to trigger and
           # ignore any one-time exceptions that occur during Puppet type loading. If
           # they aren't one-time exceptions, they will get raised again during the test.
+          # If we get the same exception twice in a row, this is probably a real
+          # compilation error, so continue to the actual test and stop trying to
+          # exercise type loading.
+          break if (exc.class == last_exc.class) and (exc.message == last_exc.message)
+          last_exc = exc
         else
           break
         end
