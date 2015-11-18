@@ -27,6 +27,7 @@ RSpec.configure do |c|
   end
 
   c.manifest_dir = File.join(c.fixture_path, 'manifests')
+  c.hiera_config = File.join(c.fixture_path, 'hiera.yaml')
   c.default_facts = {
     :architecture   =>  default_architecture,
     :hardwaremodel  =>  default_architecture,
