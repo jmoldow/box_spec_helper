@@ -4,6 +4,7 @@ require 'rubygems'
 require 'pathname'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet'
+require 'puppet/type'
 require 'puppet/settings/autosign_setting'
 
 # Use UTF-8 encoding to parse Ruby .rb files, and don't escape non-ASCII
@@ -49,6 +50,9 @@ RSpec.configure do |c|
   c.mock_framework = :rspec
 
   c.before :each do
+    # The windows_env type has global state that must be cleared between tests.
+    Puppet::Type.rmtype(:windows_env)
+
     Puppet::Settings::AutosignSetting.any_instance.stubs(:munge).returns(false)
   end
 
