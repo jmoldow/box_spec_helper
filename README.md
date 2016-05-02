@@ -30,6 +30,11 @@ Run tests with any of the following commands:
 
   - Run all tests that match a path glob
 
+Or use [box/clusterrunner](https://forge.puppet.com/box/clusterrunner) to
+deploy [ClusterRunner](http://clusterrunner.com/) and execute your test suite
+across a pool of machines (sample [clusterrunner.yaml](/clusterrunner.yaml)
+file provided in this repository).
+
 ## Blog Posts and Presentations
 
 - [Developing an Efficient Puppet Unit Testing Workflow Using ClusterRunner](https://www.box.com/blog/developing-efficient-puppet-unit-testing-workflow-using-clusterrunner/)
@@ -75,6 +80,12 @@ More blog posts comming soon. Stay tuned to
   - [https://rubygems.org/gems/puppet](https://rubygems.org/gems/puppet)
 
   - [https://docs.puppet.com](https://docs.puppet.com)
+
+- box/clusterrunner
+
+  - [https://forge.puppet.com/box/clusterrunner](https://forge.puppet.com/box/clusterrunner)
+
+  - [https://github.com/box/puppet-clusterrunner](https://github.com/box/puppet-clusterrunner)
 
 ## Other Resources
 
