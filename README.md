@@ -1,6 +1,22 @@
 # box_spec_helper
  A set of extensions to puppetlabs_spec_helper and rspec-puppet, for monolithic spaghetti puppet repos
 
+Puppet is integral to Box's infrastructure and serves many purposes. Use of
+Puppet grew organically, resulting in a large monolith of fragile spaghetti
+code. When we realized we needed CI, this code was already in a very untestable
+state. Out of the box, rspec-puppet + puppetlabs_spec_helper did not work for
+us. Rather than continuing to rely only on manual testing or rewriting all our
+code into proper modules, roles, and profiles, we were able to make the unit
+testing system work with our spaghetti code.
+
+This project includes all of the supporting code we wrote to extend
+rspec-puppet, in order to make unit testing work seamlessly with our Puppet
+codebase.
+
+Users should be able to take this code and use it to bring unit testing to
+their monolithic spaghetti repos. We hope this helps others set up their
+testing infrastructure in a fraction of the time it took us.
+
 ## Homepage
 
 [https://github.com/jmoldow/box_spec_helper](https://github.com/jmoldow/box_spec_helper)
