@@ -1,0 +1,25 @@
+PuppetUnitTests:
+    max_executors_per_slave: 15
+
+    # Break apart `spec` task to allow parallel execution
+    #  - `rake spec_prep` creates fixtures needed by all the tests.
+    #  - `rake spec_clean` deletes those fixtures.
+    #  - `rake spec_standalone` runs the actual test.
+    #  - `rake spec` does all three.
+    # So, if the setup and teardown steps are not separated out, there
+    # are race conditions.
+    setup_build:
+        - cd $PROJECT_DIR
+        - rake spec_prep
+
+    teardown_build:
+        - cd $PROJECT_DIR
+        - rake spec_clean
+
+    commands:
+        - cd $PROJECT_DIR
+        - rake spec_standalone SPEC=$TESTPATH
+
+    atomizers:
+        - TESTPATH: find $PROJECT_DIR/spec -name "*_spec.rb"
+
