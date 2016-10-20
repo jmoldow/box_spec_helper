@@ -1,11 +1,19 @@
 # -*- encoding : utf-8 -*-
 
 # These constants are needed for validation in
-# <https://github.com/puppetlabs/puppet/blob/master/lib/puppet/provider/scheduled_task/win32_taskscheduler.rb>.
+# <https://github.com/puppetlabs/puppet/blob/3.7.5/lib/puppet/provider/scheduled_task/win32_taskscheduler.rb>.
 #
-# They are normally defined in
-# <https://github.com/puppetlabs/puppet/blob/master/lib/puppet/util/windows/taskscheduler.rb>
-# but that file cannot be imported on Linux.
+# They are normally defined in <https://rubygems.org/gems/win32-taskscheduler>
+# or
+# <https://github.com/puppetlabs/puppet/blob/3.7.5/lib/puppet/util/windows/taskscheduler.rb>
+# but those files cannot be imported on Linux.
+#
+# For the sake of getting provider/scheduled_task/win32_taskscheduler.rb to not
+# fail at validation time, it just matters that these constants are defined in
+# the Win32::TaskScheduler namespace, with unique values (for the
+# TASK_TIME_TRIGGER_* constants and aliases) or integral powers of two (for the
+# TASK_TRIGGER_FLAG_* constants). It doesn't particularly matter what the
+# values are, though we've copied the values from Puppet for consistency.
 
 module Win32
   class TaskScheduler

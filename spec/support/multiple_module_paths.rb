@@ -1,32 +1,28 @@
 # -*- encoding : utf-8 -*-
 
+# This source file contains copied and modified source file snippets from
+# rspec-puppet 2.3.0, which is available under an MIT Expat license. For
+# details, see:
+#
+# - <https://github.com/rodjek/rspec-puppet/tree/v2.3.0>
+# - LICENSE-rspec-puppet-2.3.0 or <https://github.com/rodjek/rspec-puppet/blob/v2.3.0/LICENSE>
+# - <https://github.com/rodjek/rspec-puppet/blob/v2.3.0/lib/rspec-puppet/support.rb>
+
 require 'rubygems'
 
 require 'puppet'
 require 'rspec-puppet'
 require 'rspec-puppet/support'
 
-require 'support/warn'
-
-# Up through version 2.2.0, RSpec::Puppet::Support's import_str() and setup_puppet()
-# methods could not correctly handle multiple module path directories [1]. As of the
-# time of this writing, these bugs have been fixed in the master branch, but there has
-# not yet been a release containing these fixes. In this file, we override those methods
-# with the fixes from the master branch.
+# Up through version 2.2.0, RSpec::Puppet::Support's import_str() and
+# setup_puppet() methods could not correctly handle multiple module path
+# directories [1]. These bugs are fixed by [1], and exist in versions 2.3.0 and
+# later. In this file, we override those methods with the fixes, so that
+# box_spec_helper can be used with rspec-puppet 2.2.0 and eariler.
 #
 # [1] https://github.com/rodjek/rspec-puppet/pull/223
 
-unless (rspec_puppet_version = Gem.loaded_specs['rspec-puppet'].version) <= Gem::Version.new('2.2.0')
-  # Don't raise an exception, in case upgrading of rspec-puppet doesn't happen all at
-  # once; we still want testing to work during the transition period.  But do print a
-  # very prominent warning to stderr.
-  warn_with_emphasis "
-    Expected rspec-puppet version <=2.2.0, got #{rspec_puppet_version}.
-    If all Puppet test machines are no longer running <=2.2.0, remove
-    RSpec::Puppet::Support#import_str() patch in
-    spec/support/site_manifest_import.rb, as it is no longer necessary.
-  ".strip.gsub(/^ +/, '')
-else
+if Gem.loaded_specs['rspec-puppet'].version <= Gem::Version.new('2.2.0')
   module RSpec::Puppet
     module Support
       alias :setup_puppet_before_appending_to_load_path :setup_puppet

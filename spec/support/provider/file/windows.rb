@@ -1,5 +1,23 @@
 # -*- encoding : utf-8 -*-
 
+
+# This source file contains a modified source file from Puppet 3.6.2, which is
+# available under an Apache License, Version 2.0. For details, see:
+#
+# - <https://github.com/puppetlabs/puppet/tree/3.6.2>
+# - LICENSE-puppet-3 or <https://github.com/puppetlabs/puppet/blob/3.6.2/LICENSE>
+# - <https://github.com/puppetlabs/puppet/blob/3.6.2/lib/puppet/provider/file/windows.rb>
+#
+# Modifications Copyright 2016 Box, Inc., and licensed under the
+# Apache License, Version 2.0.
+#
+# All code inside the ```Puppet::Type.type(:file).provide :windows do``` block
+# is originally from Puppet, with Box modifications denoted with a
+# NOTE comment.
+#
+# All other code in this file is original Box code.
+
+
 require 'rubygems'
 
 require 'puppet'

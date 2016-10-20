@@ -1,5 +1,16 @@
 # -*- encoding : utf-8 -*-
 
+# This source file contains copied and modified source file snippets from
+# rspec-core 3.1.7, which is available under an MIT Expat license.
+# For details, see:
+#
+# - <https://github.com/rspec/rspec-core/tree/v3.1.7>
+# - LICENSE-rspec-core-3.1.7 or <https://github.com/rspec/rspec-core/blob/v3.1.7/License.txt>
+# - <https://github.com/rspec/rspec-core/blob/v3.1.7/spec/support/matchers.rb>
+#
+# Snippets are noted in the comments.
+
+
 # Copy of `pass` from <https://github.com/rspec/rspec-core/blob/v3.1.7/spec/support/matchers.rb>,
 # but with a more verbose `failure_reason`.
 RSpec::Matchers.define :pass do

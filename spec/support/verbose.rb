@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-# Based on modules/stdlib/spec/lib/puppet_spec/verbose.rb
+# Based on <https://github.com/puppetlabs/puppetlabs-stdlib/blob/4.2.0/spec/lib/puppet_spec/verbose.rb>
 
 # Support code for running stuff with warnings disabled/enabled.
 module Kernel

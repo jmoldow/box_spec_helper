@@ -1,5 +1,15 @@
 # -*- encoding : utf-8 -*-
 
+# This source file contains copied and modified source file snippets from
+# Puppet 3.7.5, which is available under an Apache License, Version 2.0. For
+# details, see:
+#
+# - <https://github.com/puppetlabs/puppet/tree/3.7.5>
+# - LICENSE-puppet-3 or <https://github.com/puppetlabs/puppet/blob/3.7.5/LICENSE>
+# - <https://github.com/puppetlabs/puppet/blob/3.7.5/spec/shared_contexts/platform.rb>
+#
+# Snippets are noted in the comments.
+
 # Contexts for stubbing platforms
 # In a describe or context block, adding :as_platform => :windows or
 # :as_platform => :posix will stub the relevant Puppet features, as well as
@@ -113,7 +123,7 @@ RSpec.configure do |c|
   end
 end
 
-# Taken from <https://github.com/puppetlabs/puppet/blob/3.7.5/spec/shared_contexts/platform.rb>.
+# Some snippets taken from <https://github.com/puppetlabs/puppet/blob/3.7.5/spec/shared_contexts/platform.rb>.
 
 shared_context 'platform' do |platform|
   let_facts_merge(PuppetPlatformFacts.facts(platform))

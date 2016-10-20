@@ -175,27 +175,28 @@
 
    END OF TERMS AND CONDITIONS
 
-   APPENDIX: How to apply the Apache License to your work.
 
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "{}"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
+This product contains copied and modified source files from Puppet 3.x, which
+is available under an Apache License, Version 2.0. For details, see:
 
-   Copyright {yyyy} {name of copyright owner}
+- <https://github.com/puppetlabs/puppet/tree/3.8.7>
+- LICENSE-puppet-3 or <https://github.com/puppetlabs/puppet/blob/3.8.7/LICENSE>
+- spec/shared_contexts/platforms.rb
+- spec/support/provider/file/windows.rb
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+This product contains copied source file snippets from rspec-puppet 2.3.0,
+which is available under an MIT Expat license. For details, see:
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+- <https://github.com/rodjek/rspec-puppet/tree/v2.3.0>
+- LICENSE-rspec-puppet-2.3.0 or <https://github.com/rodjek/rspec-puppet/blob/v2.3.0/LICENSE>
+- spec/support/multiple_module_paths.rb
+
+
+This product contains copied and modified source file snippets from
+rspec-core 3.1.7, which is available under an MIT Expat license. For details,
+see:
+
+- <https://github.com/rspec/rspec-core/tree/v3.1.7>
+- LICENSE-rspec-core-3.1.7 or <https://github.com/rspec/rspec-core/blob/v3.1.7/License.txt>
+- spec/support/matchers.rb
