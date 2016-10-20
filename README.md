@@ -152,3 +152,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Other Software Included in this Repository
+
+Some Apache v2.0 and MIT Expat-licensed code from 3rd party sources is included
+in this repository. See the bottom of the LICENSE file for details.
